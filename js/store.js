@@ -24,7 +24,7 @@ if( document.readyState == 'loading' ){
         button.addEventListener('click' , addToCartClicked);
     }
  }
-// we have a bug for removing for items that we add in cart
+// we have a bug for removing for items that we add in cart done
  function removeCardItems(event){
     let buttonClicked = event.target;
     buttonClicked.parentElement.parentElement.remove();
@@ -47,12 +47,21 @@ function addToCartClicked(event){
     let price = shopItem.getElementsByClassName('shop-item-price')[0].innerText;
     let imgSrc = shopItem.getElementsByClassName('shop-item-image')[0].src;
         addItemToCart(title , price , imgSrc);
+        updateTotalPrice();
 }
 
 function addItemToCart(title , price , imgSrc){
     let cartItems = document.getElementsByClassName('cart-items')[0];
     let cardRow = document.createElement('div');
     cardRow.classList = "cart-row"
+    //this part is for dont add other tekrari item in card
+    let cartItemsName = document.getElementsByClassName('cart-item-title');
+    for(let i=0; i<cartItemsName.length; i++){
+        if(cartItemsName[i].innerText == title){
+            alert('This Item is already in your cart.');
+            return;
+        }
+    }
     const cardRowContents =` 
         <div class="cart-item cart-column">
             <img class="cart-item-image" src="${imgSrc}" width="100" height="100">
@@ -65,6 +74,9 @@ function addItemToCart(title , price , imgSrc){
         </div>`
         cardRow.innerHTML = cardRowContents;
     cartItems.append(cardRow);
+    //ina ba document be jay cardrow kar nemikonn dalilesh chie? jvbesh ine ke ma cardrow ro khodemon create elemenr kardim va baray dastrest behesh dg document bi manir
+    cardRow.getElementsByClassName('btn-danger')[0].addEventListener('click', removeCardItems);
+    cardRow.getElementsByClassName('cart-quantity-input')[0].addEventListener('change', quantityChanged);
 }
 
 
