@@ -11,14 +11,65 @@ if( document.readyState == 'loading' ){
         let button = removeCardItem[i];
         button.addEventListener('click' , removeCardItems)
     }
+
+    let quantityInput = document.getElementsByClassName('cart-quantity-input');
+    for(let i=0; i<quantityInput.length; i++){
+        let quantity= quantityInput[i];
+        quantity.addEventListener('change' , quantityChanged);
  }
 
+    let addToCartButton = document.getElementsByClassName('shop-item-button');
+    for(let i=0; i<addToCartButton.length; i++){
+        let button = addToCartButton[i];
+        button.addEventListener('click' , addToCartClicked);
+    }
+ }
+// we have a bug for removing for items that we add in cart
  function removeCardItems(event){
     let buttonClicked = event.target;
     buttonClicked.parentElement.parentElement.remove();
     updateTotalPrice();
  }
 
+  //change number of item 
+  function quantityChanged(event){
+    let input = event.target
+    if( input.value <=0 || isNaN(input.value)){
+        input.value = 1;
+    }
+    updateTotalPrice();
+}
+
+function addToCartClicked(event){
+    let button = event.target;
+    let shopItem = button.parentElement.parentElement;
+    let title = shopItem.getElementsByClassName('shop-item-title')[0].innerText;
+    let price = shopItem.getElementsByClassName('shop-item-price')[0].innerText;
+    let imgSrc = shopItem.getElementsByClassName('shop-item-image')[0].src;
+        addItemToCart(title , price , imgSrc);
+}
+
+function addItemToCart(title , price , imgSrc){
+    let cartItems = document.getElementsByClassName('cart-items')[0];
+    let cardRow = document.createElement('div');
+    cardRow.classList = "cart-row"
+    const cardRowContents =` 
+        <div class="cart-item cart-column">
+            <img class="cart-item-image" src="${imgSrc}" width="100" height="100">
+            <span class="cart-item-title">${title}</span>
+        </div>
+        <span class="cart-price cart-column">${price}</span>
+        <div class="cart-quantity cart-column">
+            <input class="cart-quantity-input" type="number" value="1">
+            <button class="btn btn-danger" type="button">REMOVE</button>
+        </div>`
+        cardRow.innerHTML = cardRowContents;
+    cartItems.append(cardRow);
+}
+
+
+
+//change total after click on remove button
 function updateTotalPrice(){
     let cartItem = document.getElementsByClassName('cart-items')[0];
     let cartRows = cartItem.getElementsByClassName('cart-row')
@@ -32,5 +83,6 @@ function updateTotalPrice(){
         let quantity = quantityElement.value
         total += price * quantity
 }
+    total = Math.round(total*100)/100
     document.getElementsByClassName('cart-total-price')[0].innerText = '$' +total
 }
