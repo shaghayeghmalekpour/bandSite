@@ -23,7 +23,20 @@ if( document.readyState == 'loading' ){
         let button = addToCartButton[i];
         button.addEventListener('click' , addToCartClicked);
     }
+
+    document.getElementsByClassName('btn-purchase')[0].addEventListener('click' , purchaseClicked)
  }
+
+//purchase button 
+function purchaseClicked(){
+    alert('thanks for your purchase')
+    let cartItems = document.getElementsByClassName('cart-items')[0];
+    while(cartItems.hasChildNodes()){
+        cartItems.removeChild(cartItems.firstChild)
+    }
+    updateTotalPrice();
+}
+
 // we have a bug for removing for items that we add in cart done
  function removeCardItems(event){
     let buttonClicked = event.target;
